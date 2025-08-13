@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator | by Sadrita Neogi</title>
+    <style>
+        :root {
+            --primary-bg: #f0f2f5;
+            --secondary-bg: #ffffff;
+            --text-color: #333333;
+            --accent-color: #4a6bff;
+            --button-bg: #f0f0f0;
+            --button-text: #333333;
+            --button-hover: #e0e0e0;
+            --shadow-color: rgba(0,0,0,0.1);
+            --display-bg: #f8f8f8;
+            --operation-btn: #4a6bff;
+            --operation-text: white;
+        }
+
+        .dark-theme {
+            --primary-bg: #1e1e2e;
+            --secondary-bg: #2d2d3a;
+            --text-color: #e0e0e0;
+            --accent-color: #6c8eff;
+            --button-bg: #3a3a4a;
+            --button-text: #e0e0e0;
+            --button-hover: #4a4a5a;
+            --shadow-color: rgba(0,0,0,0.3);
+            --display-bg: #252535;
+            --operation-btn: #6c8eff;
+            --operation-text: white;
+        }
+
+        .custom-theme {
+            --primary-bg: #f5f0e6;
+            --secondary-bg: #fff9ec;
+            --text-color: #5a3e36;
+            --accent-color: #d4a59a;
+            --button-bg: #e8d8c3;
+            --button-text: #5a3e36;
+            --button-hover: #d8c8b3;
+            --shadow-color: rgba(90, 62, 54, 0.1);
+            --display-bg: #ede4d6;
+            --operation-btn: #d4a59a;
+            --operation-text: white;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+
+        .developer {
+            font-size: 14px;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .theme-switcher {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .theme-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .theme-btn.light {
+            background: linear-gradient(135deg, #f0f2f5 50%, #4a6bff 50%);
+        }
+
+        .theme-btn.dark {
+            background: linear-gradient(135deg, #1e1e2e 50%, #6c8eff 50%);
+        }
+
+        .theme-btn.custom {
+            background: linear-gradient(135deg, #f5f0e6 50%, #d4a59a 50%);
+        }
+
+        .calculator {
+            background-color: var(--secondary-bg);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            padding: 25px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+        }
+
+        .display {
+            background-color: var(--display-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: right;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .previous-operand {
+            font-size: 1rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            height: 20px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .current-operand {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--text-color);
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            padding: 15px 0;
+            font-size: 1.2rem;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            cursor: pointer;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 3px var(--shadow-color);
+        }
+
+        .span-2 {
+            grid-column: span 2;
+        }
+
+        .operation {
+            background-color: var(--operation-btn);
+            color: var(--operation-text);
+        }
+
+        .operation:hover {
+            background-color: var(--accent-color);
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.7;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .calculator {
+                padding: 15px;
+            }
+            
+            .display {
+                padding: 15px;
+                min-height: 80px;
+            }
+            
+            .current-operand {
+                font-size: 2rem;
+            }
+            
+            button {
+                padding: 12px 0;
+                font-size: 1rem;
+            }
+            
+            .buttons {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <div class="header">
+        <div class="developer">Calculator developed by Sadrita Neogi</div>
+    </div>
+
+    <div class="calculator">
+        <div class="display">
+            <div class="previous-operand" id="previous-operand"></div>
+            <div class="current-operand" id="current-operand">0</div>
+        </div>
+        
+        <div class="buttons">
+            <button class="operation" onclick="clearAll()">AC</button>
+            <button class="operation" onclick="deleteLastChar()">DEL</button>
+            <button class="operation" onclick="appendOperation('%')">%</button>
+            <button class="operation" onclick="appendOperation('/')">/</button>
+            
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button class="operation" onclick="appendOperation('*')">×</button>
+            
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button class="operation" onclick="appendOperation('-')">-</button>
+            
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button class="operation" onclick="appendOperation('+')">+</button>
+            
+            <button class="span-2" onclick="appendNumber('0')">0</button>
+            <button onclick="appendNumber('.')">.</button>
+            <button class="operation" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <div class="theme-switcher">
+        <button class="theme-btn light" onclick="setTheme('light')" title="Light Theme"></button>
+        <button class="theme-btn dark" onclick="setTheme('dark')" title="Dark Theme"></button>
+        <button class="theme-btn custom" onclick="setTheme('custom')" title="Custom Theme"></button>
+    </div>
+
+    <div class="footer">
+        A minimalist calculator made with love by Sadrita Neogi
+    </div>
+
+    <script>
+        // Calculator functionality
+        let currentOperand = '0';
+        let previousOperand = '';
+        let operation = undefined;
+        let resetScreen = false;
+
+        const currentOperandElement = document.getElementById('current-operand');
+        const previousOperandElement = document.getElementById('previous-operand');
+
+        function appendNumber(number) {
+            if (currentOperand === '0' || resetScreen) {
+                currentOperand = '';
+                resetScreen = false;
+            }
+            if (number === '.' && currentOperand.includes('.')) return;
+            currentOperand += number;
+            updateDisplay();
+        }
+
+        function appendOperation(op) {
+            if (currentOperand === '') return;
+            if (previousOperand !== '') {
+                calculate();
+            }
+            operation = op;
+            previousOperand = currentOperand;
+            currentOperand = '';
+            updateDisplay();
+        }
+
+        function calculate() {
+            let computation;
+            const prev = parseFloat(previousOperand);
+            const current = parseFloat(currentOperand);
+            if (isNaN(prev) || isNaN(current)) return;
+            
+            switch (operation) {
+                case '+':
+                    computation = prev + current;
+                    break;
+                case '-':
+                    computation = prev - current;
+                    break;
+                case '*':
+                    computation = prev * current;
+                    break;
+                case '/':
+                    computation = prev / current;
+                    break;
+                case '%':
+                    computation = prev % current;
+                    break;
+                default:
+                    return;
+            }
+            
+            currentOperand = computation.toString();
+            operation = undefined;
+            previousOperand = '';
+            resetScreen = true;
+            updateDisplay();
+        }
+
+        function clearAll() {
+            currentOperand = '0';
+            previousOperand = '';
+            operation = undefined;
+            updateDisplay();
+        }
+
+        function deleteLastChar() {
+            if (currentOperand.length === 1) {
+                currentOperand = '0';
+            } else {
+                currentOperand = currentOperand.slice(0, -1);
+            }
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            currentOperandElement.textContent = currentOperand;
+            if (operation != null) {
+                previousOperandElement.textContent = `${previousOperand} ${operation}`;
+            } else {
+                previousOperandElement.textContent = '';
+            }
+        }
+
+        // Theme switching functionality
+        function setTheme(themeName) {
+            document.body.className = themeName + '-theme';
+        }
+    </script>
+</body>
+</html>
+
